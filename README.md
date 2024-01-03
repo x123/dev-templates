@@ -1,6 +1,10 @@
 # nix flake templates
 
-## envs
+## elixir
 `nix flake init --template github:x123/dev-templates#elixir`
-`nix flake init --template github:x123/dev-templates#hashi`
+
+## terraform
+`nix flake init --template github:x123/dev-templates#terraform`
+
+## nix
 `nix flake init --template github:x123/dev-templates#nix`

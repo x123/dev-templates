@@ -66,9 +66,9 @@
           description = "Elixir development environment";
         };
 
-        hashi = {
-          path = ./hashi;
-          description = "HashiCorp DevOps tools development environment";
+        terraform = {
+          path = ./terraform;
+          description = "terraform development environment";
         };
 
         nix = {
