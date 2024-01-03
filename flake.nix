@@ -65,33 +65,17 @@
           path = ./elixir;
           description = "Elixir development environment";
         };
-        go = {
-          path = ./go;
-          description = "Go (Golang) development environment";
-        };
 
         hashi = {
           path = ./hashi;
           description = "HashiCorp DevOps tools development environment";
         };
+
         nix = {
           path = ./nix;
           description = "Nix development environment";
         };
-        python = {
-          path = ./python;
-          description = "Python development environment";
-        };
 
-        shell = {
-          path = ./shell;
-          description = "Shell script development environment";
-        };
-
-        zig = {
-          path = ./zig;
-          description = "Zig development environment";
-        };
       };
     };
 }
