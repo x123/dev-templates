@@ -19,6 +19,15 @@
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) defaultPoetryOverrides;
       in
       {
+        nixConfig = {
+          extra-substituters = [
+            "http://nixium.boxchop.city"
+          ];
+          extra-trusted-public-keys = [
+            "nixium.boxchop.city:VqGEePxRjPwhVfnLAJBi2duwwkIczIy5ODGW/8KCPbc="
+          ];
+        };
+
         packages = {
           myapp = mkPoetryApplication {
             projectDir = self;
