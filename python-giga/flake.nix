@@ -21,7 +21,7 @@
       {
         nixConfig = {
           extra-substituters = [
-            "http://nixium.boxchop.city"
+            "https://nixium.boxchop.city"
           ];
           extra-trusted-public-keys = [
             "nixium.boxchop.city:VqGEePxRjPwhVfnLAJBi2duwwkIczIy5ODGW/8KCPbc="
