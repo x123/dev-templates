@@ -28,6 +28,24 @@
                 --template \
                 "github:the-nix-way/dev-templates#''${TEMPLATE}"
             '';
+            binary-cache = prev.writeScriptBin "binary-cache" ''
+              if [ -z $1 ]; then
+                echo "No remote destiation specified."
+                echo "Example usage: binary-cache root@somewhere.tld"
+                exit 1
+              fi
+
+              REMOTE=$1
+              CUR_SYSTEM=`${exec "nix"} eval --impure --raw --expr 'builtins.currentSystem'`
+
+              for dir in `ls -d */`; do # Iterate through all the templates
+                (
+                  cd $dir
+                  echo "Updating binary-cache for ''${dir}"
+                  ${exec "nix"} copy --to ssh://''${REMOTE} .#devShells.''${CUR_SYSTEM}.default
+                )
+              done
+            '';
             update = prev.writeScriptBin "update" ''
               for dir in `ls -d */`; do # Iterate through all the templates
                 (
@@ -47,7 +65,7 @@
     {
       devShells = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.mkShell {
-          packages = with pkgs; [ format update ];
+          packages = with pkgs; [ format update binary-cache ];
         };
       });
 
