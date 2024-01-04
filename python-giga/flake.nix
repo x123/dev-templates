@@ -96,6 +96,7 @@
                       buildInputs = (old.buildInputs or [ ])
                         ++ [
                         super.poetry
+                        pkgs.ssdeep
                       ];
 
                       propagatedBuildInputs = (old.propagatedBuildInputs or [ ])
