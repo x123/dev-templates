@@ -338,8 +338,6 @@ xxhash = "3.4.1"
 yarl = "1.9.2"
 zipp = "3.17.0"
 zopfli = "0.2.3"
-meson = "^1.2.1"
-meson-python = "^0.13.1"
 
 [build-system]
 requires = ["poetry-core"]

@@ -192,12 +192,14 @@
 
                       propagatedBuildInputs = (old.propagatedBuildInputs or [ ])
                         ++ [
+                        super.meson-python
+                        super.meson
                         super.numpy
                         super.python-dateutil
                         super.pytz
                         super.tzdata
                       ];
-
+#
 #                      passthru.optional-dependencies =
 #                        let
 #                          extras = {
