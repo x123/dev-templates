@@ -5,6 +5,10 @@
       "https://nixium.boxchop.city"
     ];
     extra-trusted-public-keys = [
+      # TODO: eventually remove this original
+      "nixium.boxchop.city:VqGEePxRjPwhVfnLAJBi2duwwkIczIy5ODGW/8KCPbc="
+
+      # current key
       "nixium.boxchop.city-1:I/9SEHdelbS1b8ZX5QeeQKtsugsCcIqCVCec4TZPXIw="
     ];
   };
