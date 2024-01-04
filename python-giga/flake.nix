@@ -159,11 +159,11 @@
                 levenshtein = super.levenshtein.overridePythonAttrs
                   (
                     old: {
-                      nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ super.cmake super.cython_3 super.scikit-build ];
+                      nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ super.cmake super.cython_3 super.scikit-build ] ++ super.lib.optionals super.stdenv.isDarwin [ pkgs.xcodebuild ];
                       buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.rapidfuzz-cpp super.packaging ];
                       dontUseCmakeConfigure = true;
                       env.NIX_CFLAGS_COMPILE = toString (super.lib.optionals (super.stdenv.cc.isClang && super.stdenv.isDarwin) [
-                        "fno-lto"
+                        "-fno-lto"
                       ]);
                     }
                   );
