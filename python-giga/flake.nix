@@ -96,7 +96,6 @@
                       buildInputs = (old.buildInputs or [ ])
                         ++ [
                         super.poetry
-                        super.ssdeep
                       ];
 
                       propagatedBuildInputs = (old.propagatedBuildInputs or [ ])
@@ -116,15 +115,6 @@
                       postPatch = ''
                         substituteInPlace setup.py \
                           --replace '"pytest-runner"' ""
-                        substituteInPlace setup.py \
-                          --replace '"pytest-runner"' ""
-                        substituteInPlace setup.py \
-                          --replace '"pytest-runner"' ""
-                        substituteInPlace setup.py \
-                          --replace '"pytest-runner<2.4"' ""
-                        sed -i '/pytest-runner/d' ./ssdeep-3.4/setup.py
-                        sed -i '/pytest/d' ./ssdeep-3.4/setup.cfg
-                        sed -i '/pytest/d' ./ssdeep-3.4/tox.ini
                       '';
 
                       pythonImportsCheck = [
