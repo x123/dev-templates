@@ -198,156 +198,156 @@
                         super.tzdata
                       ];
 
-                      passthru.optional-dependencies =
-                        let
-                          extras = {
-                            aws = [
-                              super.s3fs
-                            ];
-                            clipboard = [
-                              super.pyqt5
-                              super.qtpy
-                            ];
-                            compression = [
-                              super.brotlipy
-                              super.python-snappy
-                              super.zstandard
-                            ];
-                            computation = [
-                              super.scipy
-                              super.xarray
-                            ];
-                            excel = [
-                              super.odfpy
-                              super.openpyxl
-                              # TODO: pyxlsb
-                              super.xlrd
-                              super.xlsxwriter
-                            ];
-                            feather = [
-                              super.pyarrow
-                            ];
-                            fss = [
-                              super.fsspec
-                            ];
-                            gcp = [
-                              super.gcsfs
-                              # TODO: pandas-gqb
-                            ];
-                            hdf5 = [
-                              super.blosc2
-                              super.tables
-                            ];
-                            html = [
-                              super.beautifulsoup4
-                              super.html5lib
-                              super.lxml
-                            ];
-                            mysql = [
-                              super.sqlalchemy
-                              super.pymysql
-                            ];
-                            output_formatting = [
-                              super.jinja2
-                              super.tabulate
-                            ];
-                            parquet = [
-                              super.pyarrow
-                            ];
-                            performance = [
-                              super.bottleneck
-                              super.numba
-                              super.numexpr
-                            ];
-                            plot = [
-                              super.matplotlib
-                            ];
-                            postgresql = [
-                              super.sqlalchemy
-                              super.psycopg2
-                            ];
-                            spss = [
-                              super.pyreadstat
-                            ];
-                            sql-other = [
-                              super.sqlalchemy
-                            ];
-                            xml = [
-                              super.lxml
-                            ];
-                          };
-                        in
-                        extras // {
-                          all = super.lib.concatLists (super.lib.attrValues extras);
-                        };
-
-                      nativeCheckInputs = (old.nativeCheckInputs or [ ])
-                        ++ [
-                        super.glibcLocales
-                        super.hypothesis
-                        super.pytest-asyncio
-                        super.pytest-xdist
-                        super.pytestCheckHook
-                      ] ++ super.lib.optionals (super.stdenv.isLinux) [
-                        # for locale executable
-                        super.glibc
-                      ] ++ super.lib.optionals (super.stdenv.isDarwin) [
-                        # for locale executable
-                        super.adv_cmds
-                      ];
-
-                      # don't max out build cores, it breaks tests
-                      dontUsePytestXdist = true;
-
-                      __darwinAllowLocalNetworking = true;
-
-                      pytestFlagsArray = (old.pytestFlagsArray or [ ])
-                        ++ [
-                        # https://github.com/pandas-dev/pandas/blob/main/test_fast.sh
-                        "-m"
-                        "'not single_cpu and not slow and not network and not db and not slow_arm'"
-                        # https://github.com/pandas-dev/pandas/issues/54907
-                        "--no-strict-data-files"
-                        "--numprocesses"
-                        "4"
-                      ];
-
-                      disabledTests = (old.disabledTests or [ ])
-                        ++ [
-                        # AssertionError: Did not see expected warning of class 'FutureWarning'
-                        "test_parsing_tzlocal_deprecated"
-                      ] ++ super.lib.optionals (super.stdenv.isDarwin && super.stdenv.isAarch64) [
-                        # tests/generic/test_finalize.py::test_binops[and_-args4-right] - AssertionError: assert {} == {'a': 1}
-                        "test_binops"
-                        # These tests are unreliable on aarch64-darwin. See https://github.com/pandas-dev/pandas/issues/38921.
-                        "test_rolling"
-                      ] ++ super.lib.optional super.stdenv.is32bit [
-                        # https://github.com/pandas-dev/pandas/issues/37398
-                        "test_rolling_var_numerical_issues"
-                      ];
-
-                      # Tests have relative paths, and need to reference compiled C extensions
-                      # so change directory where `import .test` is able to be resolved
-                      preCheck = ''
-                        export HOME=$TMPDIR
-                        export LC_ALL="en_US.UTF-8"
-                        cd $out/${super.python.sitePackages}/pandas
-                      ''
-                      # TODO: Get locale and clipboard support working on darwin.
-                      #       Until then we disable the tests.
-                      + super.lib.optionalString super.stdenv.isDarwin ''
-                        # Fake the impure dependencies pbpaste and pbcopy
-                        echo "#!${super.runtimeShell}" > pbcopy
-                        echo "#!${super.runtimeShell}" > pbpaste
-                        chmod a+x pbcopy pbpaste
-                        export PATH=$(pwd):$PATH
-                      '';
-
-                      pythonImportsCheck = [
-                        "pandas"
-                      ];
-
-                      buildInputs = (old.buildInputs or [ ]) ++ [ super.pip ];
+#                      passthru.optional-dependencies =
+#                        let
+#                          extras = {
+#                            aws = [
+#                              super.s3fs
+#                            ];
+#                            clipboard = [
+#                              super.pyqt5
+#                              super.qtpy
+#                            ];
+#                            compression = [
+#                              super.brotlipy
+#                              super.python-snappy
+#                              super.zstandard
+#                            ];
+#                            computation = [
+#                              super.scipy
+#                              super.xarray
+#                            ];
+#                            excel = [
+#                              super.odfpy
+#                              super.openpyxl
+#                              # TODO: pyxlsb
+#                              super.xlrd
+#                              super.xlsxwriter
+#                            ];
+#                            feather = [
+#                              super.pyarrow
+#                            ];
+#                            fss = [
+#                              super.fsspec
+#                            ];
+#                            gcp = [
+#                              super.gcsfs
+#                              # TODO: pandas-gqb
+#                            ];
+#                            hdf5 = [
+#                              super.blosc2
+#                              super.tables
+#                            ];
+#                            html = [
+#                              super.beautifulsoup4
+#                              super.html5lib
+#                              super.lxml
+#                            ];
+#                            mysql = [
+#                              super.sqlalchemy
+#                              super.pymysql
+#                            ];
+#                            output_formatting = [
+#                              super.jinja2
+#                              super.tabulate
+#                            ];
+#                            parquet = [
+#                              super.pyarrow
+#                            ];
+#                            performance = [
+#                              super.bottleneck
+#                              super.numba
+#                              super.numexpr
+#                            ];
+#                            plot = [
+#                              super.matplotlib
+#                            ];
+#                            postgresql = [
+#                              super.sqlalchemy
+#                              super.psycopg2
+#                            ];
+#                            spss = [
+#                              super.pyreadstat
+#                            ];
+#                            sql-other = [
+#                              super.sqlalchemy
+#                            ];
+#                            xml = [
+#                              super.lxml
+#                            ];
+#                          };
+#                        in
+#                        extras // {
+#                          all = super.lib.concatLists (super.lib.attrValues extras);
+#                        };
+#
+#                      nativeCheckInputs = (old.nativeCheckInputs or [ ])
+#                        ++ [
+#                        super.glibcLocales
+#                        super.hypothesis
+#                        super.pytest-asyncio
+#                        super.pytest-xdist
+#                        super.pytestCheckHook
+#                      ] ++ super.lib.optionals (super.stdenv.isLinux) [
+#                        # for locale executable
+#                        super.glibc
+#                      ] ++ super.lib.optionals (super.stdenv.isDarwin) [
+#                        # for locale executable
+#                        super.adv_cmds
+#                      ];
+#
+#                      # don't max out build cores, it breaks tests
+#                      dontUsePytestXdist = true;
+#
+#                      __darwinAllowLocalNetworking = true;
+#
+#                      pytestFlagsArray = (old.pytestFlagsArray or [ ])
+#                        ++ [
+#                        # https://github.com/pandas-dev/pandas/blob/main/test_fast.sh
+#                        "-m"
+#                        "'not single_cpu and not slow and not network and not db and not slow_arm'"
+#                        # https://github.com/pandas-dev/pandas/issues/54907
+#                        "--no-strict-data-files"
+#                        "--numprocesses"
+#                        "4"
+#                      ];
+#
+#                      disabledTests = (old.disabledTests or [ ])
+#                        ++ [
+#                        # AssertionError: Did not see expected warning of class 'FutureWarning'
+#                        "test_parsing_tzlocal_deprecated"
+#                      ] ++ super.lib.optionals (super.stdenv.isDarwin && super.stdenv.isAarch64) [
+#                        # tests/generic/test_finalize.py::test_binops[and_-args4-right] - AssertionError: assert {} == {'a': 1}
+#                        "test_binops"
+#                        # These tests are unreliable on aarch64-darwin. See https://github.com/pandas-dev/pandas/issues/38921.
+#                        "test_rolling"
+#                      ] ++ super.lib.optional super.stdenv.is32bit [
+#                        # https://github.com/pandas-dev/pandas/issues/37398
+#                        "test_rolling_var_numerical_issues"
+#                      ];
+#
+#                      # Tests have relative paths, and need to reference compiled C extensions
+#                      # so change directory where `import .test` is able to be resolved
+#                      preCheck = ''
+#                        export HOME=$TMPDIR
+#                        export LC_ALL="en_US.UTF-8"
+#                        cd $out/${super.python.sitePackages}/pandas
+#                      ''
+#                      # TODO: Get locale and clipboard support working on darwin.
+#                      #       Until then we disable the tests.
+#                      + super.lib.optionalString super.stdenv.isDarwin ''
+#                        # Fake the impure dependencies pbpaste and pbcopy
+#                        echo "#!${super.runtimeShell}" > pbcopy
+#                        echo "#!${super.runtimeShell}" > pbpaste
+#                        chmod a+x pbcopy pbpaste
+#                        export PATH=$(pwd):$PATH
+#                      '';
+#
+#                      pythonImportsCheck = [
+#                        "pandas"
+#                      ];
+#
+#                      buildInputs = (old.buildInputs or [ ]) ++ [ ];
                     }
                   );
 
