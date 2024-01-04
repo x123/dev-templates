@@ -3,6 +3,9 @@ name = "python3-nix"
 version = "0.1.0"
 description = "python using nix"
 readme = "README.md"
+authors = [
+  "x123 <x123@users.noreply.github.com>",
+]
 
 [tool.poetry.dependencies]
 python = "^3.10.9"
