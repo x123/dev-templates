@@ -1,5 +1,13 @@
 {
   description = "Giga python packaged using poetry2nix";
+  nixConfig = {
+    extra-substituters = [
+      "https://nixium.boxchop.city"
+    ];
+    extra-trusted-public-keys = [
+      "nixium.boxchop.city:VqGEePxRjPwhVfnLAJBi2duwwkIczIy5ODGW/8KCPbc="
+    ];
+  };
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
@@ -19,15 +27,6 @@
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) defaultPoetryOverrides;
       in
       {
-        nixConfig = {
-          extra-substituters = [
-            "https://nixium.boxchop.city"
-          ];
-          extra-trusted-public-keys = [
-            "nixium.boxchop.city:VqGEePxRjPwhVfnLAJBi2duwwkIczIy5ODGW/8KCPbc="
-          ];
-        };
-
         packages = {
           myapp = mkPoetryApplication {
             projectDir = self;
