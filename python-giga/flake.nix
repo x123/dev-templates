@@ -539,6 +539,9 @@
 
             ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA start
             ${pkgs.postgresql_13}/bin/createuser -h $PGDATA/sockets postgres --createdb
+            ${pkgs.postgresql_13}/bin/createuser -h $PGDATA/sockets pgsql --createdb
+            ${pkgs.postgresql_13}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE postgres SUPERUSER;"
+            ${pkgs.postgresql_13}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE pgsql SUPERUSER;"
 
             echo "#########################################################################"
             echo "Use pg-up, pg-connect, and pg-down to start, connect, and stop postgres. "
