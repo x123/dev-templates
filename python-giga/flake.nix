@@ -537,10 +537,12 @@
             mkdir -pv $PGDATA/sockets
             echo "unix_socket_directories = '$PGDATA/sockets'" >> $PGDATA/postgresql.conf
 
-            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA -l log start
+            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA start
             ${pkgs.postgresql_13}/bin/createuser -h $PGDATA/sockets postgres --createdb
 
-            echo "Use pg-up and pg-down to start and stop postgres."
+            echo "#########################################################################"
+            echo "Use pg-up, pg-connect, and pg-down to start, connect, and stop postgres. "
+            echo "#########################################################################"
 
             trap cleanup EXIT
 
