@@ -27,6 +27,9 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        myPostgres = pkgs.postgresql_13.withPackages (p:
+          [ p.hypopg]
+        );
 
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) defaultPoetryOverrides;
@@ -504,15 +507,15 @@
           default = self.packages.${system}.myapp;
 
           pg-up = pkgs.writeScriptBin "pg-up" ''
-            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA start
+            ${myPostgres}/bin/pg_ctl -D $PGDATA start
           '';
 
           pg-down = pkgs.writeScriptBin "pg-down" ''
-            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA stop
+            ${myPostgres}/bin/pg_ctl -D $PGDATA stop
           '';
 
           pg-connect = pkgs.writeScriptBin "pg-connect" ''
-            ${pkgs.postgresql_13}/bin/psql -h $PGDATA/sockets postgres
+            ${myPostgres}/bin/psql -h $PGDATA/sockets postgres
           '';
         };
 
@@ -523,7 +526,6 @@
             libffi
             openssl
             poetry
-            postgresql_13
             redis
 
             self.packages.${system}.pg-up
@@ -534,15 +536,15 @@
             export PG_TMPDIR=`${pkgs.coreutils}/bin/mktemp -dt pg13-test-$$-XXXXXX`
             #echo $PG_TMPDIR
             export PGDATA=$PG_TMPDIR
-            ${pkgs.postgresql_13}/bin/initdb $PGDATA
+            ${myPostgres}/bin/initdb $PGDATA
             mkdir -pv $PGDATA/sockets
             echo "unix_socket_directories = '$PGDATA/sockets'" >> $PGDATA/postgresql.conf
 
-            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA start
-            ${pkgs.postgresql_13}/bin/createuser -h $PGDATA/sockets postgres --createdb
-            ${pkgs.postgresql_13}/bin/createuser -h $PGDATA/sockets pgsql --createdb
-            ${pkgs.postgresql_13}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE postgres SUPERUSER;"
-            ${pkgs.postgresql_13}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE pgsql SUPERUSER;"
+            ${myPostgres}/bin/pg_ctl -D $PGDATA start
+            ${myPostgres}/bin/createuser -h $PGDATA/sockets postgres --createdb
+            ${myPostgres}/bin/createuser -h $PGDATA/sockets pgsql --createdb
+            ${myPostgres}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE postgres SUPERUSER;"
+            ${myPostgres}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE pgsql SUPERUSER;"
 
             ${pkgs.redis}/bin/redis-server --daemonize yes
 
@@ -554,7 +556,7 @@
 
             cleanup()
             {
-              ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA stop
+              ${myPostgres}/bin/pg_ctl -D $PGDATA stop
               echo "Removing PG_TMPDIR ''${PG_TMPDIR}"
               rm -rf ''${PG_TMPDIR}
 
