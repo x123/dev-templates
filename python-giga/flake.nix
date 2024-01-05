@@ -48,6 +48,21 @@
             overrides = defaultPoetryOverrides.extend
               (self: super: {
 
+                setuptools = super.setuptools.overridePythonAttrs
+                  (
+                    old: {
+                      version = "65.7.0";
+
+                      src = super.pkgs.fetchFromGitHub {
+                        version = "65.7.0";
+                        owner = "pypa";
+                        repo = "setuptools";
+                        rev = "refs/tags/v65.7.0";
+                        hash = "sha256-8SfWFQYg6I/7M5zUIMNmQPllmzH+jrSZg9j4n+DbFr4=";
+                      };
+                    }
+                  );
+
                 pygal = super.pygal.overridePythonAttrs
                   (
                     old: {
