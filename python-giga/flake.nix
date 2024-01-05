@@ -547,6 +547,7 @@
             ${myPostgres}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE postgres SUPERUSER;"
             ${myPostgres}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE pgsql SUPERUSER;"
 
+            #export "postgresql:///postgres?host=$PGDATA/sockets"
             ${pkgs.redis}/bin/redis-server --daemonize yes
 
             echo "#########################################################################"
