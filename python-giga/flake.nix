@@ -527,6 +527,7 @@
             openssl
             poetry
             redis
+            myPostgres
 
             self.packages.${system}.pg-up
             self.packages.${system}.pg-down
