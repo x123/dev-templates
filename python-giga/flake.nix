@@ -27,6 +27,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) defaultPoetryOverrides;
       in
@@ -484,12 +485,49 @@
               }
               );
           };
+
           default = self.packages.${system}.myapp;
+
+          pg-up = pkgs.writeScriptBin "pg-up" ''
+            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA start
+          '';
+
+          pg-down = pkgs.writeScriptBin "pg-down" ''
+            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA stop
+          '';
         };
 
         devShells.default = pkgs.mkShell {
           inputsFrom = [ self.packages.${system}.myapp ];
-          packages = with pkgs; [ poetry libffi postgresql_13 db62 openssl ];
+          packages = with pkgs; [
+            poetry
+            libffi
+            postgresql_13
+            db62
+            openssl
+
+            self.packages.${system}.pg-up
+            self.packages.${system}.pg-down
+          ];
+          shellHook = ''
+            export PG_TMPDIR=`${pkgs.coreutils}/bin/mktemp -dt pg13-test-$$-XXXXXX`
+            echo $PG_TMPDIR
+            export PGDATA=$PG_TMPDIR
+            ${pkgs.postgresql_13}/bin/initdb $PGDATA
+            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA start
+            ${pkgs.postgresql_13}/bin/createuser postgres --createdb
+
+            echo "Use pg-up and pg-down to start and stop postgres."
+
+            trap cleanup EXIT
+
+            cleanup()
+            {
+              ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA stop
+              echo "Removing PG_TMPDIR ''${PG_TMPDIR}"
+              rm -rf ''${PG_TMPDIR}
+            }
+          '';
         };
       });
 }
