@@ -535,12 +535,7 @@
           ];
           shellHook = ''
             export PG_TMPDIR=`${pkgs.coreutils}/bin/mktemp -dt pg13-test-$$-XXXXXX`
-            #echo $PG_TMPDIR
             export PGDATA=$PG_TMPDIR
-            export PGPORT=5432
-            export PGHOST=localhost
-            export PGDATABASE=postgres
-            export PGUSER=postgres
             ${myPostgres}/bin/initdb $PGDATA
             mkdir -pv $PGDATA/sockets
             echo "unix_socket_directories = '$PGDATA/sockets'" >> $PGDATA/postgresql.conf
@@ -550,8 +545,17 @@
             ${myPostgres}/bin/createuser -h $PGDATA/sockets pgsql --createdb
             ${myPostgres}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE postgres SUPERUSER;"
             ${myPostgres}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE pgsql SUPERUSER;"
+            export PGPORT=5432
+            export PGHOST=localhost
+            export PGDATABASE=postgres
+            export PGUSER=postgres
 
-            #export "postgresql:///postgres?host=$PGDATA/sockets"
+            mkdir -p $PGDATA/ssl
+            ${pkgs.openssl}/bin/openssl genrsa -out "$PGDATA/server.key" 2048
+            ${pkgs.openssl}/bin/openssl req -new -key "$PGDATA/server.key" -days 365 -subj "/CN=www.blah.dk/O=blah/C=DK" -out "$PGDATA/server.crt" -x509
+            echo "ssl = on" >> $PGDATA/postgresql.conf
+            ${myPostgres}/bin/pg_ctl -D $PGDATA restart
+
             ${pkgs.redis}/bin/redis-server --daemonize yes
 
             echo "#########################################################################"
