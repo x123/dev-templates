@@ -519,11 +519,12 @@
         devShells.default = pkgs.mkShell {
           inputsFrom = [ self.packages.${system}.myapp ];
           packages = with pkgs; [
-            poetry
-            libffi
-            postgresql_13
             db62
+            libffi
             openssl
+            poetry
+            postgresql_13
+            redis
 
             self.packages.${system}.pg-up
             self.packages.${system}.pg-down
@@ -531,7 +532,7 @@
           ];
           shellHook = ''
             export PG_TMPDIR=`${pkgs.coreutils}/bin/mktemp -dt pg13-test-$$-XXXXXX`
-            echo $PG_TMPDIR
+            #echo $PG_TMPDIR
             export PGDATA=$PG_TMPDIR
             ${pkgs.postgresql_13}/bin/initdb $PGDATA
             mkdir -pv $PGDATA/sockets
@@ -542,6 +543,8 @@
             ${pkgs.postgresql_13}/bin/createuser -h $PGDATA/sockets pgsql --createdb
             ${pkgs.postgresql_13}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE postgres SUPERUSER;"
             ${pkgs.postgresql_13}/bin/psql -h $PGDATA/sockets postgres -c "ALTER ROLE pgsql SUPERUSER;"
+
+            ${pkgs.redis}/bin/redis-server --daemonize yes
 
             echo "#########################################################################"
             echo "Use pg-up, pg-connect, and pg-down to start, connect, and stop postgres. "
@@ -554,6 +557,8 @@
               ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA stop
               echo "Removing PG_TMPDIR ''${PG_TMPDIR}"
               rm -rf ''${PG_TMPDIR}
+
+              killall -9 redis-server
             }
           '';
         };
