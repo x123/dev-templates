@@ -537,6 +537,10 @@
             export PG_TMPDIR=`${pkgs.coreutils}/bin/mktemp -dt pg13-test-$$-XXXXXX`
             #echo $PG_TMPDIR
             export PGDATA=$PG_TMPDIR
+            export PGPORT=5432
+            export PGHOST=localhost
+            export PGDATABASE=postgres
+            export PGUSER=postgres
             ${myPostgres}/bin/initdb $PGDATA
             mkdir -pv $PGDATA/sockets
             echo "unix_socket_directories = '$PGDATA/sockets'" >> $PGDATA/postgresql.conf
