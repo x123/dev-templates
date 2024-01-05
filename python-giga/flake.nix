@@ -510,6 +510,10 @@
           pg-down = pkgs.writeScriptBin "pg-down" ''
             ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA stop
           '';
+
+          pg-connect = pkgs.writeScriptBin "pg-connect" ''
+            ${pkgs.postgresql_13}/bin/psql -h $PGDATA/sockets postgres
+          '';
         };
 
         devShells.default = pkgs.mkShell {
@@ -523,14 +527,18 @@
 
             self.packages.${system}.pg-up
             self.packages.${system}.pg-down
+            self.packages.${system}.pg-connect
           ];
           shellHook = ''
             export PG_TMPDIR=`${pkgs.coreutils}/bin/mktemp -dt pg13-test-$$-XXXXXX`
             echo $PG_TMPDIR
             export PGDATA=$PG_TMPDIR
             ${pkgs.postgresql_13}/bin/initdb $PGDATA
-            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA start
-            ${pkgs.postgresql_13}/bin/createuser postgres --createdb
+            mkdir -pv $PGDATA/sockets
+            echo "unix_socket_directories = '$PGDATA/sockets'" >> $PGDATA/postgresql.conf
+
+            ${pkgs.postgresql_13}/bin/pg_ctl -D $PGDATA -l log start
+            ${pkgs.postgresql_13}/bin/createuser -h $PGDATA/sockets postgres --createdb
 
             echo "Use pg-up and pg-down to start and stop postgres."
 
