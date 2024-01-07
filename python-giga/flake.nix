@@ -28,7 +28,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         myPostgres = pkgs.postgresql_13.withPackages (p:
-          [ p.hypopg]
+          [ p.hypopg ]
         );
 
         inherit (poetry2nix.lib.mkPoetry2Nix { inherit pkgs; }) mkPoetryApplication;
