@@ -94,6 +94,11 @@
           description = "Nix development environment";
         };
 
+        python = {
+          path = ./python-giga;
+          description = "Giga Python development environment";
+        };
+
         python-giga = {
           path = ./python-giga;
           description = "Giga Python development environment";
