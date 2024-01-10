@@ -14,12 +14,12 @@
       devShells = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.mkShell {
           packages = (with pkgs;
-          [
-            beam.packages.erlangR26.elixir_1_16
-            git
-            erlang
-            postgresql_16
-          ]) ++
+            [
+              beam.packages.erlangR26.elixir_1_16
+              git
+              erlang
+              postgresql_16
+            ]) ++
           # Linux only
           pkgs.lib.optionals (pkgs.stdenv.isLinux) (with pkgs; [ inotify-tools libnotify ]) ++
           # macOS only
