@@ -95,7 +95,7 @@
         };
 
         python = {
-          path = ./python-giga;
+          path = ./python;
           description = "Giga Python development environment";
         };
 
