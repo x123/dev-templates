@@ -84,6 +84,11 @@
           description = "Elixir development environment";
         };
 
+        go = {
+          path = ./go;
+          description = "Go development environment";
+        };
+
         terraform = {
           path = ./terraform;
           description = "terraform development environment";
