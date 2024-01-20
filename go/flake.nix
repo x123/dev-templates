@@ -25,6 +25,9 @@
             # https://github.com/golangci/golangci-lint
             golangci-lint
           ];
+          shellHook = ''
+          export PATH=~/go/bin:$PATH
+          '';
         };
       });
     };
