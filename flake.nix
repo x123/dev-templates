@@ -26,7 +26,7 @@
                 --experimental-features 'nix-command flakes' \
                 flake init \
                 --template \
-                "github:the-nix-way/dev-templates#''${TEMPLATE}"
+                "github:x123/dev-templates#''${TEMPLATE}"
             '';
             binary-cache = prev.writeScriptBin "binary-cache" ''
               if [ -z $1 ]; then
