@@ -106,11 +106,6 @@
           path = ./python;
           description = "Giga Python development environment";
         };
-
-        python-giga = {
-          path = ./python-giga;
-          description = "Giga Python development environment";
-        };
       };
     };
 }

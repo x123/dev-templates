@@ -8,6 +8,3 @@
 
 ## nix
 `nix flake init --template github:x123/dev-templates#nix`
-
-## python-giga
-`nix flake init --template github:x123/dev-templates#python-giga`
