@@ -21,6 +21,10 @@
             haskellPackages.dhall-nix
             rnix-lsp
           ];
+
+          shellHook = ''
+            export PATH="$PWD/bin:$PATH"
+          '';
         };
       });
     };
