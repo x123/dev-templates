@@ -106,6 +106,11 @@
           path = ./python;
           description = "Giga Python development environment";
         };
+
+        rust = {
+          path = ./rust;
+          description = "rust development environment";
+        };
       };
     };
 }
